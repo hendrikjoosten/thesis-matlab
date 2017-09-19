@@ -30,5 +30,5 @@ function pinkBin = findP(frame)
     pinkBin = imopen(pinkBin, sedisk);
     %subplot(2, 1, 2);
     %figure
-    %imshow(pinkBin);
+    imshow(pinkBin);
 end
