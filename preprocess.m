@@ -171,3 +171,5 @@ z18Avail(find(br3(:,1))) = 1;
 z19Avail = zeros(length(fl1),1);
 z19Avail(find(br4(:,1))) = 1;
 
+
+

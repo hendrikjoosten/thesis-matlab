@@ -133,25 +133,171 @@ matlabFunction(H2_matrix_eq,'file','H2_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h3 GPS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GPSPos = [-x;y];
-GPSVel = [-dx;dy];
-GPSCourse = [angs(3)];
-% h3 Equation
-h3_eqn = [GPSPos;GPSVel;GPSCourse];
-matlabFunction(h3_eqn,'file','h3_eqn');
-% h3 Jacobian
-H3_matrix_eq=jacobian(h3_eqn,X);
-matlabFunction(H3_matrix_eq,'file','H3_matrix');
+% GPSPos = [-x;y];
+% GPSVel = [-dx;dy];
+% GPSCourse = [angs(3)];
+% % h3 Equation
+% h3_eqn = [GPSPos;GPSVel;GPSCourse];
+% matlabFunction(h3_eqn,'file','h3_eqn');
+% % h3 Jacobian
+% H3_matrix_eq=jacobian(h3_eqn,X);
+% matlabFunction(H3_matrix_eq,'file','H3_matrix');
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%h4 start of markers
+%import camera goodies
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%loading the camera models as stereo calibration sessions...
+FrontStereoSession = load('FRONTcalibrationSession.mat');
+BackStereoSession = load('BACKcalibrationSession.mat');
+%%defining the camera matrices.
+%front right
+FRCameraMatrix = cameraMatrix(FrontStereoSession.calibrationSession.CameraParameters.CameraParameters2,...
+FrontStereoSession.calibrationSession.CameraParameters.RotationOfCamera2,...
+FrontStereoSession.calibrationSession.CameraParameters.TranslationOfCamera2);
+%front left
+FLCameraMatrix = cameraMatrix(FrontStereoSession.calibrationSession.CameraParameters.CameraParameters1,0,0);
+%back right
+BRCameraMatrix = cameraMatrix(BackStereoSession.calibrationSession.CameraParameters.CameraParameters1,0,0);
+%back left
+BLCamesraMatrix = cameraMatrix(BackStereoSession.calibrationSession.CameraParameters.CameraParameters2,...
+BackStereoSession.calibrationSession.CameraParameters.RotationOfCamera2,...
+BackStereoSession.calibrationSession.CameraParameters.TranslationOfCamera2);
+
+%model
+vec_thigh = [0;0;400];
+vec_calf = [0;0;400];
+vec_foot = [200;0;0];
+vec_body_right = [-10;-100;100];
+vec_body_left = [-10;100;100];
+
+% Front Points WRT front left camera frame
+%       point 1 right knee
+%       point 2 left knee
+%       point 3 right foot
+%       point 4 left foot
+% Back Points WRT back left camera frame
+%       point 1 right calf
+%       point 2 left calf
+%       point 3 right heel
+%       point 4 left heel
 
 
+%%still needs transformation from body frame to camera frame
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FL POINT 1       %%%%%%         H4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FL_point1_xyz = vec_body_right + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + [40;0;0];
+FL_point1_pixels = FLCameraMatrix * FL_point1_xyz;
+% h4 Equation
+h4_eqn = [FL_point1_pixels];
+matlabFunction(h4_eqn,'file','h4_eqn');
+% h4 Jacobian
+H4_matrix_eq=jacobian(h4_eqn,X);
+matlabFunction(H4_matrix_eq,'file','H4_matrix');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FL POINT 2       %%%%%%         H5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FL_point2_xyz = vec_body_left + eul2rotm([0,LHipPitch,LHipYaw])*vec_thigh + [40;0;0]; 
+FL_point2_pixels = FLCameraMatrix * FL_point2_xyz; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FL POINT 3       %%%%%%         H6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FL_point3_xyz = FL_point1_xyz + eul2rotm([0,RKneePitch,0])*vec_calf + eul2rotm([0,RAnklePitch,0])*vec_calf + [40;0;0]; 
+FL_point3_pixels = FLCameraMatrix * FL_point3_xyz; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FL POINT 4       %%%%%%         H7
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FL_point4_xyz = FL_point2_xyz + eul2rotm([0,LKneePitch,0])*vec_calf + eul2rotm([0,LAnklePitch,0])*vec_foot + [40;0;0]; 
+FL_point4_pixels = FLCameraMatrix * FL_point4_xyz;
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FR POINT 1       %%%%%%         H8
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FR_point1_xyz = vec_body_right + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh;
+FR_point1_pixels = FRCameraMatrix * FR_point1_xyz;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FR POINT 2       %%%%%%         H9
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FR_point2_xyz = vec_body_left + eul2rotm([0,LHipPitch,LHipYaw])*vec_thigh;
+FR_point2_pixels = FRCameraMatrix * FR_point2_xyz;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FR POINT 3       %%%%%%         H10
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FR_point3_xyz = FR_point1_xyz + eul2rotm([0,RKneePitch,0])*vec_calf + eul2rotm([0,RAnklePitch,0])*vec_calf;
+FR_point3_pixels = FRCameraMatrix * FR_point3_xyz;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       FR POINT 4       %%%%%%         H11
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FR_point4_xyz = FR_point2_xyz + eul2rotm([0,LKneePitch,0])*vec_calf + eul2rotm([0,LAnklePitch,0])*vec_foot;
+FR_point4_pixels = FRCameraMatrix * FR_point4_xyz;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BL POINT 1       %%%%%%         H12
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BL_point1_xyz = vec_body_right + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+0.5*eul2rotm([0,RKneePitch,0])*vec_calf + [40;0;0]; 
+BL_point1_pixels = BLCameraMatrix * BL_point1_xyz;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BL POINT 2       %%%%%%         H13
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BL_point2_xyz = vec_body_left + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+0.5*eul2rotm([0,RKneePitch,0])*vec_calf + [40;0;0]; 
+BL_point2_pixels = BLCameraMatrix * BL_point2_xyz; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BL POINT 3       %%%%%%         H14
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BL_point3_xyz = vec_body_right + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+eul2rotm([0,RKneePitch,0])*(vec_calf + [0;0;15]) + [40;0;0]; 
+BL_point3_pixels = BLCameraMatrix * BL_point3_xyz;  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BL POINT 4       %%%%%%         H15
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BL_point4_xyz = vec_body_left + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+eul2rotm([0,RKneePitch,0])*(vec_calf + [0;0;15]) + [40;0;0]; 
+BL_point4_pixels = BLCameraMatrix * BL_point4_xyz;  
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BR POINT 1       %%%%%%         H16
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BR_point1_xyz = vec_body_right + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+0.5*eul2rotm([0,RKneePitch,0])*vec_calf; 
+BR_point1_pixels = BRCameraMatrix * BR_point1_xyz;  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BR POINT 2       %%%%%%         H17
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BR_point2_xyz = vec_body_left + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+0.5*eul2rotm([0,RKneePitch,0])*vec_calf;
+BR_point2_pixels = BRCameraMatrix * BR_point2_xyz; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BR POINT 3       %%%%%%         H18
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BR_point3_xyz = vec_body_right + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+eul2rotm([0,RKneePitch,0])*(vec_calf + [0;0;15]);
+BR_point3_pixels = BRCameraMatrix * BR_point3_xyz; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       BR POINT 4       %%%%%%         H19
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BR_point4_xyz = vec_body_left + eul2rotm([0,RHipPitch,RHipYaw])*vec_thigh + ...
+eul2rotm([0,RKneePitch,0])*(vec_calf + [0;0;15]);
+BR_point4_pixels = BRCameraMatrix * BR_point4_xyz;
 
 
 
