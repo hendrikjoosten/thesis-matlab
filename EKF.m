@@ -1,4 +1,3 @@
-
 %%=================================================================
 %%admin
 %%=================================================================
@@ -8,27 +7,21 @@ close all
 clc
 
 %%=================================================================
-%%Pre Process and import the data
+%%preprocess data, derive eqautions, make PQR
 %%=================================================================
 
-preprocess;
+create_data
+create_equations
+create_PQR
 
-%%=================================================================
-%%Initial values of states and cov
-%%=================================================================
-
-create_equations;
-create_PQR;
-
-states = zeroes(42,42);
+states = zeros(42,42);
 
 %%=================================================================
 %%FILTER
 %%=================================================================
 
 N = 1800;
-
-
+I = eye(42);
 
 
 for i=1:1:N
@@ -102,23 +95,11 @@ for i=1:1:N
     
     end
     
-    % Kalman Gain
-    %K=(covP*H')/(H*covP*H'+diag(R));
-    % Correction
-    %states=states+K*(zk-h);
-    % New covariance
-    %covP=(I-K*H)*covP;
-    % Store covariance for smoother
-    %Pcov(:,:,i) = covP;
-    %xEst(:,i)=states;
-
+%     % Kalman Gain
+%     K = (P*H')/(H*P*H'+diag(R));
+%     % Correction
+%     states = states + K*(zk-h);
+%     % New covariance
+%     P = (I-K*H)*P;
+    
 end
-
-
-%%=================================================================
-%%Measure
-%%=================================================================
-
-
-
-

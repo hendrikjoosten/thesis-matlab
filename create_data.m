@@ -89,23 +89,56 @@ BL_Data = importdata('BL.csv',',');
 BR_Data = importdata('BR.csv',',');
 FL_Data = importdata('FL.csv',',');
 FR_Data = importdata('FR.csv',',');
+
 %extracing x y pixel data
 fl1 = FL_Data.data(:,1:2);      %Z4
+fl1(:,2) = 720 - fl1(:,2);
+
 fl2 = FL_Data.data(:,3:4);      %Z5
+fl2(:,2) = 720 - fl2(:,2);
+
 fl3 = FL_Data.data(:,5:6);      %Z6
+fl3(:,2) = 720 - fl3(:,2);
+
 fl4 = FL_Data.data(:,7:8);      %Z7
+fl4(:,2) = 720 - fl4(:,2);
+
 fr1 = FR_Data.data(:,1:2);      %Z8
+fr1(:,2) = 720 - fr1(:,2);
+
 fr2 = FR_Data.data(:,3:4);      %Z9
+fr2(:,2) = 720 - fr2(:,2);
+
 fr3 = FR_Data.data(:,5:6);      %Z10
+fr3(:,2) = 720 - fr3(:,2);
+
 fr4 = FR_Data.data(:,7:8);      %Z11
+fr4(:,2) = 720 - fr4(:,2);
+
 bl1 = BL_Data.data(:,1:2);      %Z12
+bl1(:,2) = 720 - bl1(:,2);
+
 bl2 = BL_Data.data(:,3:4);      %Z13
+bl2(:,2) = 720 - bl2(:,2);
+
 bl3 = BL_Data.data(:,5:6);      %Z14
+bl3(:,2) = 720 - bl3(:,2);
+
 bl4 = BL_Data.data(:,7:8);      %Z15
+bl4(:,2) = 720 - bl4(:,2);
+
 br1 = BR_Data.data(:,1:2);      %Z16
+br1(:,2) = 720 - br1(:,2);
+
 br2 = BR_Data.data(:,3:4);      %Z17
+br2(:,2) = 720 - br2(:,2);
+
 br3 = BR_Data.data(:,5:6);      %Z18
+br3(:,2) = 720 - br3(:,2);
+
 br4 = BR_Data.data(:,7:8);      %Z19
+br4(:,2) = 720 - br4(:,2);
+
 
 % Z4
 z04Avail = zeros(length(fl1),1);
