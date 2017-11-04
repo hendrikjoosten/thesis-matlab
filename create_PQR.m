@@ -1,13 +1,58 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Defining the sampling time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ts = 0.01;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%P 42 by 42
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-P = diag(0.001*ones(42,1));
+p_dd_x = 1;
+p_dd_y = 1;
+p_dd_z = 1;
+
+vec_p_acc = [p_dd_x;p_dd_y;p_dd_z];
+vec_p_vel = ts*vec_p_acc;
+vec_p_pos = ts*vec_p_vel;
+
+p_dd_phi = 0.1;
+p_dd_theta = 0.1;
+p_dd_psi = 0.1;
+
+vec_p_ddangles = [p_dd_phi;p_dd_theta;p_dd_psi];
+vec_p_dangles = ts*vec_p_ddangles;
+vec_p_angles = ts*vec_p_dangles;
+
+p_dd_theta_hip = 0.1;
+p_dd_psi_hip = 0.1;
+p_dd_theta_knee = 0.1;
+p_dd_theta_ankle = 0.1;
+
+vec_p_ddlegs = [p_dd_theta_hip;p_dd_psi_hip;p_dd_theta_knee;p_dd_theta_ankle];
+vec_p_dlegs = ts*vec_p_ddlegs;
+vec_p_legs = ts*vec_p_dlegs;
+
+P = [...
+    vec_p_pos;...           
+    vec_p_angles;...        
+    vec_p_legs;...          
+    vec_p_legs;...         
+    vec_p_vel;...
+    vec_p_dangles;...
+    vec_p_dlegs;...
+    vec_p_dlegs;...
+    vec_p_acc;...
+    vec_p_ddangles;...
+    vec_p_ddlegs;...
+    vec_p_ddlegs...
+    ];
+
+P = diag(P);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Q Matrix 42 by 42
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ts = 0.01;
 
 q_dd_x = 125;
 q_dd_y = 80;
@@ -35,16 +80,14 @@ vec_q_dlegs = ts*vec_q_ddlegs;
 vec_q_legs = ts*vec_q_dlegs;
 
 Q = [...
-    vec_q_pos;...           %body pos
-    vec_q_angles;...        %body angs
-    vec_q_legs;...          %left leg
-    vec_q_legs;...          %right leg
-    
+    vec_q_pos;...           
+    vec_q_angles;...       
+    vec_q_legs;...          
+    vec_q_legs;...         
     vec_q_vel;...
     vec_q_dangles;...
     vec_q_dlegs;...
     vec_q_dlegs;...
-    
     vec_q_acc;...
     vec_q_ddangles;...
     vec_q_ddlegs;...
@@ -62,6 +105,7 @@ r_accelerometer = (1E-3)^2;             %3 degrees
 r_gyroscope = (5*pi/180)^2;             %3 degrees
 r_magnetometer = 0.25^2;                %3 degrees
 r_barotometer = 5.9;                    %1 degrees
+
 %gps
 r_gps_pos = 5^2;                        %2 degrees
 r_gps_vel = 0.5;                        %1 degrees
@@ -70,7 +114,11 @@ r_gps_head = (15*pi/180)^2;             %1 degrees
 %from the cameras we have pixels as measurements
 r_pixel = 5^2;                          %16 degrees  maybe 32
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% clear raw data files
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+clearvars -except Q P r_pixel r_gps_head r_gps_vel r_gps_pos r_barotometer r_magnetometer r_gyroscope r_accelerometer
 
 
 
