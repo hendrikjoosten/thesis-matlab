@@ -99,11 +99,14 @@ vec_mag = [mx; my; mz];
 syms bar
 %gps
 syms gpsx gpsy
+vec_gsp_pos = [gpsx;gpsy];
 syms gpsvel gpshead
+vec_gsp_vel = [gpsvel;gpshead];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h1 IMU 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 RB_I_linear = [];
 RB_I_angular = [];
 
@@ -121,9 +124,10 @@ matlabFunction(H1_matrix_eq,'file','H1_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h2 barometer DONE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 body_barometer = 1013.25*(1-bodyZ/44307.7)^5.25;
 % h2 Equation
-h2_eqn = [PressSens];
+h2_eqn = [body_barometer];
 matlabFunction(h2_eqn,'file','h2_eqn');
 % h2 Jacobian
 H2_matrix_eq=jacobian(h2_eqn,X);
@@ -132,9 +136,9 @@ matlabFunction(H2_matrix_eq,'file','H2_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h3 GPS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% GPSPos = [-x;y];
-% GPSVel = [-dx;dy];
-% GPSCourse = [angs(3)];
+[body_gps_lat;body_gps_long] = [-bodyX;bodyY];
+GPSVel = [-dx;dy];
+
 % % h3 Equation
 % h3_eqn = [GPSPos;GPSVel;GPSCourse];
 % matlabFunction(h3_eqn,'file','h3_eqn');

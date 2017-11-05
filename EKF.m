@@ -15,9 +15,20 @@ create_data;            %create the measurement vectors   DONE
 create_equations;       %create the measurement equations DONE
 states = zeros(42,42);
 
+mx = -0.1316;
+my = 17.3801;
+mz = -21.101;
+
 %%=================================================================
 %%FILTER
 %%=================================================================
+
+x_estimated_store = zeros(34,N);
+x_actual_store = zeros(34,N);
+
+Pcov_store = zeros(34,34,N);
+p_store = zeros(34,34,N);
+f_store = zeros(34,34,N);
 
 N = 1800;
 I = eye(42);
@@ -27,46 +38,45 @@ for i=1:1:N
     %%=================================================================
     %%Predict
     %%=================================================================
+    
     zk = [];
     H = [];
     h = [];
     R = [];
     
     states = num2cell(states);
+    [bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw,LHipPitch, LHipYaw, LKneePitch, LAnklePitch,RHipPitch, RHipYaw, RKneePitch, RAnklePitch,d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch] = deal(states{:});
+    states = state_predict_function(bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw,LHipPitch, LHipYaw, LKneePitch, LAnklePitch,RHipPitch, RHipYaw, RKneePitch, RAnklePitch,d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch);
+    x_estimated_store(:,i) = states;    
     
-    [   bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw,...
-        LHipPitch, LHipYaw, LKneePitch, LAnklePitch,...
-        RHipPitch, RHipYaw, RKneePitch, RAnklePitch,...
-        d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,...
-        d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,...
-        d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,...
-        dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,...
-        dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,...
-        dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch] = deal(states{:});
+    %determining the F matrix
+    Fmatrix  = Fmatrix_function(bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw,LHipPitch, LHipYaw, LKneePitch, LAnklePitch,RHipPitch, RHipYaw, RKneePitch, RAnklePitch,d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch);
+    f_store(:,:,i) = Fmatrix;
     
-    states=state_predict_function(
-    
+    %determining the P matrix
+    P = (Fmatrix)*(P*(Fmatrix')) + Q;
+    p_store(:,:,i) = P;
     
     
-
     %%=================================================================
     %%Update
     %%=================================================================
     
     if z01Avail(i) == 1
-        z03 = [];
-        zk = [zk; z03];
+        z01 = [body_accel_x(i)';body_accel_y(i)';body_accel_z(i)';body_gyro_x(i)';body_gyro_y(i)';body_gyro_z(i)';body_mag_x(i)';body_mag_y(i)';body_mag_z(i)'];
+        zk = [zk; z01];
         
-        H1 = H1_matrix();
-        h1 = h1_eqn();
+        H1 = H1_matrix(dd_bodyX,dd_bodyY,dd_bodyZ,d_bodyRoll, d_bodyPitch, d_bodyYaw,mx,my,mz);
+        h1 = h1_eqn(dd_bodyX,dd_bodyY,dd_bodyZ,d_bodyRoll, d_bodyPitch, d_bodyYaw,mx,my,mz);
         H = [H;H1];
         h = [h;h1];
         
+        R = [R,r_accelerometer,r_accelerometer,r_accelerometer,r_gyroscope,r_gyroscope,r_gyroscope,r_magnetometer,r_magnetometer,r_magnetometer];
         
     end
     
     if z02Avail(i) == 1
-        z03 = [];
+        z02 = [];
         zk = [zk; z03];
         
         H2 = H2_matrix();

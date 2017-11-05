@@ -114,14 +114,6 @@ r_gps_head = (15*pi/180)^2;             %1 degrees
 %from the cameras we have pixels as measurements
 r_pixel = 5^2;                          %16 degrees  maybe 32
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% clear raw data files
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-clearvars -except Q P r_pixel r_gps_head r_gps_vel r_gps_pos r_barotometer r_magnetometer r_gyroscope r_accelerometer
-
-
-
 
 
 
