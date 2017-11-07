@@ -88,27 +88,11 @@ matlabFunction(predict_eq,'file','state_prediction_function');
 Fmatrix_eq=jacobian(predict_eq,X);
 matlabFunction(Fmatrix_eq,'file','F_matrix_function');
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%creating syms for measurements
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%magnotometer
-syms mx my mz
-vec_mag = [mx; my; mz];
-%barometer
-syms bar
-%gps
-syms gpsx gpsy
-vec_gsp_pos = [gpsx;gpsy];
-syms gpsvel gpshead
-vec_gsp_vel = [gpsvel;gpshead];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h1 IMU 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-RB_I_linear = [];
-RB_I_angular = [];
 temp_acc = vec_acc;             
 temp_gyro = vec_omega;
 %h1 Equation
@@ -194,9 +178,13 @@ vec_body_left = [-10;100;100]/1000;
 %%still needs transformation from body frame to camera frame
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%       front
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FL POINT 1       %%%%%%         H4 RIGHT KNEE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-FL_point1_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + [40;0;0]/1000;
+FL_point1_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh;
 
 FL_point1_xyz = [FL_point1_xyz(2);FL_point1_xyz(1);FL_point1_xyz(3);1];
 
@@ -212,14 +200,14 @@ matlabFunction(H4_matrix_eq,'file','H4_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FL POINT 2       %%%%%%         H5      LEFT KNEE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-FL_point2_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + [40;0;0]/1000;
+FL_point2_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh;
 
 FL_point2_xyz = [FL_point2_xyz(2);FL_point2_xyz(1);FL_point2_xyz(3);1];
 
 FL_point2_pixels = FLCameraMatrix(1:2,:) * FL_point2_xyz./repmat(FLCameraMatrix(3,:) * FL_point2_xyz,2,1);
 
 % h5 Equation
-h5_eqn = [FL_point1_pixels];
+h5_eqn = FL_point2_pixels;
 matlabFunction(h5_eqn,'file','h5_eqn');
 % h5 Jacobian
 H4_matrix_eq=jacobian(h5_eqn,X);
@@ -228,15 +216,15 @@ matlabFunction(H4_matrix_eq,'file','H5_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FL POINT 3       %%%%%%         H6      RIGHT TOE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-FL_point3_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + [40;0;0]/1000 ...
-+ eulrot(0,RKneePitch,0)*vec_calf + eulrot(0,RAnklePitch,0)*vec_calf + [40;0;0]/1000; 
+FL_point3_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh ...
++ eulrot(0,RKneePitch,0)*vec_calf + eulrot(0,RAnklePitch,0)*vec_foot; 
 
 FL_point3_xyz = [FL_point3_xyz(2);FL_point3_xyz(1);FL_point3_xyz(3);1];
 
 FL_point3_pixels = FLCameraMatrix(1:2,:) * FL_point3_xyz./repmat(FLCameraMatrix(3,:) * FL_point3_xyz,2,1);
 
 % h6 Equation
-h6_eqn = [FL_point3_pixels];
+h6_eqn = FL_point3_pixels;
 matlabFunction(h6_eqn,'file','h6_eqn');
 % h6 Jacobian
 H6_matrix_eq=jacobian(h6_eqn,X);
@@ -245,14 +233,15 @@ matlabFunction(H4_matrix_eq,'file','H6_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FL POINT 4       %%%%%%         H7          LEFT TOE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-FL_point4_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + [40;0;0]/1000 ...
-+ eulrot(0,LKneePitch,0)*vec_calf + eulrot(0,LAnklePitch,0)*vec_foot + [40;0;0]; 
+FL_point4_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh ...
++ eulrot(0,LKneePitch,0)*vec_calf + eulrot(0,LAnklePitch,0)*vec_foot; 
 
 FL_point4_xyz = [FL_point4_xyz(2);FL_point4_xyz(1);FL_point4_xyz(3);1];
+
 FL_point4_pixels = FLCameraMatrix(1:2,:) * FL_point4_xyz./repmat(FLCameraMatrix(3,:) * FL_point4_xyz,2,1);
 
 % h7 Equation
-h7_eqn = [FL_point4_pixels];
+h7_eqn = FL_point4_pixels;
 matlabFunction(h7_eqn,'file','h7_eqn');
 % h7 Jacobian
 H7_matrix_eq=jacobian(h7_eqn,X);
@@ -262,7 +251,7 @@ matlabFunction(H7_matrix_eq,'file','H7_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FR POINT 1       %%%%%%         H8          RIGHT KNEE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-FR_point1_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)'*vec_thigh;
+FR_point1_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh;
 
 FR_point1_xyz = [FR_point1_xyz(2);FR_point1_xyz(1);FR_point1_xyz(3);1];
 
@@ -270,7 +259,7 @@ FR_point1_pixels = FRCameraMatrix(1:2,:) * FR_point1_xyz./repmat(FRCameraMatrix(
 
 
 % h8 Equation
-h8_eqn = [FR_point1_pixels];
+h8_eqn = FR_point1_pixels;
 matlabFunction(h8_eqn,'file','h8_eqn');
 % h8 Jacobian
 H8_matrix_eq=jacobian(h8_eqn,X);
@@ -287,7 +276,7 @@ FR_point2_pixels = FRCameraMatrix(1:2,:) * FR_point2_xyz./repmat(FRCameraMatrix(
 
 
 % h9 Equation
-h9_eqn = [FR_point2_pixels];
+h9_eqn = FR_point2_pixels;
 matlabFunction(h9_eqn,'file','h9_eqn');
 % h9 Jacobian
 H9_matrix_eq=jacobian(h9_eqn,X);
@@ -296,7 +285,8 @@ matlabFunction(H9_matrix_eq,'file','H9_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FR POINT 3       %%%%%%         H10         RIGHT TOE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-FR_point3_xyz = FR_point1_xyz + eulrot(0,RKneePitch,0)*vec_calf + eulrot(0,RAnklePitch,0)*vec_calf;
+FR_point3_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh ...
+    + eulrot(0,RKneePitch,0)*vec_calf + eulrot(0,RAnklePitch,0)*vec_foot;
 
 FR_point3_xyz = [FR_point3_xyz(2);FR_point3_xyz(1);FR_point3_xyz(3);1];
 
@@ -304,7 +294,7 @@ FR_point3_pixels = FRCameraMatrix(1:2,:) * FR_point3_xyz./repmat(FRCameraMatrix(
 
 
 % h10 Equation
-h10_eqn = [FR_point3_pixels];
+h10_eqn = FR_point3_pixels;
 matlabFunction(h10_eqn,'file','h10_eqn');
 % h10 Jacobian
 H10_matrix_eq=jacobian(h10_eqn,X);
@@ -313,14 +303,15 @@ matlabFunction(H10_matrix_eq,'file','H10_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FR POINT 4       %%%%%%         H11         LEFT TOE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-FR_point4_xyz = FR_point2_xyz + eulrot(0,LKneePitch,0)*vec_calf + eulrot(0,LAnklePitch,0)*vec_foot;
+FR_point4_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh ...
+    + eulrot(0,LKneePitch,0)*vec_calf + eulrot(0,LAnklePitch,0)*vec_foot;
 
 FR_point4_xyz = [FR_point4_xyz(2);FR_point4_xyz(1);FR_point4_xyz(3);1];
 
 FR_point4_pixels = FRCameraMatrix(1:2,:) * FR_point4_xyz./repmat(FRCameraMatrix(3,:) * FR_point4_xyz,2,1);
 
 % h4 Equation
-h11_eqn = [FR_point4_pixels];
+h11_eqn = FR_point4_pixels;
 matlabFunction(h11_eqn,'file','h11_eqn');
 % h11 Jacobian
 H11_matrix_eq=jacobian(h11_eqn,X);
@@ -331,59 +322,71 @@ matlabFunction(H11_matrix_eq,'file','H11_matrix');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BL POINT 1       %%%%%%         H12
+%%%%%       BL POINT 1       %%%%%%         H12 right calf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BL_point1_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-0.5*eulrot(0,RKneePitch,0)*vec_calf + [40;0;0]; 
-BL_point1_pixels = BLCameraMatrix * BL_point1_xyz;
+0.5*eulrot(0,RKneePitch,0)*vec_calf; 
+
+BL_point1_xyz = [BL_point1_xyz(2);BL_point1_xyz(1);BL_point1_xyz(3);1];
+
+BL_point1_pixels = FLCameraMatrix(1:2,:) * BL_point1_xyz./repmat(FLCameraMatrix(3,:) * BL_point1_xyz,2,1);
 
 % h12 Equation
-h12_eqn = [BL_point1_pixels];
+h12_eqn = BL_point1_pixels;
 matlabFunction(h12_eqn,'file','h12_eqn');
 % h12 Jacobian
 H12_matrix_eq=jacobian(h12_eqn,X);
 matlabFunction(H12_matrix_eq,'file','H12_matrix');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BL POINT 2       %%%%%%         H13
+%%%%%       BL POINT 2       %%%%%%         H13 left calf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BL_point2_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-0.5*eulrot(0,RKneePitch,0)*vec_calf + [40;0;0]; 
-BL_point2_pixels = BLCameraMatrix * BL_point2_xyz;
+0.5*eulrot(0,RKneePitch,0)*vec_calf; 
+
+BL_point2_xyz = [BL_point2_xyz(2);BL_point2_xyz(1);BL_point2_xyz(3);1];
+
+BL_point2_pixels = FLCameraMatrix(1:2,:) * BL_point2_xyz./repmat(FLCameraMatrix(3,:) * BL_point2_xyz,2,1);
 
 
 % h13 Equation
-h13_eqn = [BL_point2_pixels];
+h13_eqn = BL_point2_pixels;
 matlabFunction(h13_eqn,'file','h13_eqn');
 % h13 Jacobian
 H13_matrix_eq=jacobian(h13_eqn,X);
 matlabFunction(H13_matrix_eq,'file','H13_matrix');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BL POINT 3       %%%%%%         H14
+%%%%%       BL POINT 3       %%%%%%         H14 right heel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BL_point3_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]) + [40;0;0]; 
-BL_point3_pixels = BLCameraMatrix * BL_point3_xyz;
+eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]/1000); 
+
+BL_point3_xyz = [BL_point3_xyz(2);BL_point3_xyz(1);BL_point3_xyz(3);1];
+
+BL_point3_pixels = FLCameraMatrix(1:2,:) * BL_point3_xyz./repmat(FLCameraMatrix(3,:) * BL_point3_xyz,2,1);
 
 
 % h14 Equation
-h14_eqn = [BL_point3_pixels];
+h14_eqn = BL_point3_pixels;
 matlabFunction(h14_eqn,'file','h14_eqn');
 % h14 Jacobian
 H14_matrix_eq=jacobian(h14_eqn,X);
 matlabFunction(H14_matrix_eq,'file','H14_matrix');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BL POINT 4       %%%%%%         H15
+%%%%%       BL POINT 4       %%%%%%         H15 left heel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BL_point4_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]) + [40;0;0]; 
-BL_point4_pixels = BLCameraMatrix * BL_point4_xyz;
+eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]); 
+
+BL_point4_xyz = [BL_point4_xyz(2);BL_point4_xyz(1);BL_point4_xyz(3);1];
+
+BL_point4_pixels = FLCameraMatrix(1:2,:) * BL_point4_xyz./repmat(FLCameraMatrix(3,:) * BL_point4_xyz,2,1);
 
 
 % h15 Equation
-h15_eqn = [BL_point4_pixels];
+h15_eqn = BL_point4_pixels;
 matlabFunction(h15_eqn,'file','h15_eqn');
 % h15 Jacobian
 H15_matrix_eq=jacobian(h15_eqn,X);
@@ -391,11 +394,14 @@ matlabFunction(H15_matrix_eq,'file','H15_matrix');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BR POINT 1       %%%%%%         H16
+%%%%%       BR POINT 1       %%%%%%         H16 right calf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BR_point1_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
 0.5*eulrot(0,RKneePitch,0)*vec_calf; 
-BR_point1_pixels = BRCameraMatrix * BR_point1_xyz;
+
+BR_point1_xyz = [BR_point1_xyz(2);BR_point1_xyz(1);BR_point1_xyz(3);1];
+
+BR_point1_pixels = FLCameraMatrix(1:2,:) * BR_point1_xyz./repmat(FLCameraMatrix(3,:) * BR_point1_xyz,2,1);
 
 
 % h16 Equation
@@ -406,11 +412,14 @@ H16_matrix_eq=jacobian(h16_eqn,X);
 matlabFunction(H16_matrix_eq,'file','H16_matrix');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BR POINT 2       %%%%%%         H17
+%%%%%       BR POINT 2       %%%%%%         H17 left calf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BR_point2_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
 0.5*eulrot(0,RKneePitch,0)*vec_calf;
-BR_point2_pixels = BRCameraMatrix * BR_point2_xyz;
+
+BR_point2_xyz = [BR_point2_xyz(2);BR_point2_xyz(1);BR_point2_xyz(3);1];
+
+BR_point2_pixels = FLCameraMatrix(1:2,:) * BR_point2_xyz./repmat(FLCameraMatrix(3,:) * BR_point2_xyz,2,1);
 
 
 % h17 Equation
@@ -421,30 +430,36 @@ H17_matrix_eq=jacobian(h17_eqn,X);
 matlabFunction(H17_matrix_eq,'file','H17_matrix');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BR POINT 3       %%%%%%         H18
+%%%%%       BR POINT 3       %%%%%%         H18 right heel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BR_point3_xyz = vec_body_right + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]);
-BR_point3_pixels = BRCameraMatrix * BR_point3_xyz;
+eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]/1000);
+
+BR_point3_xyz = [BR_point3_xyz(2);BR_point3_xyz(1);BR_point3_xyz(3);1];
+
+BR_point3_pixels = FLCameraMatrix(1:2,:) * BR_point3_xyz./repmat(FLCameraMatrix(3,:) * BR_point3_xyz,2,1);
 
 
 % h18 Equation
-h18_eqn = [BR_point3_pixels];
+h18_eqn = BR_point3_pixels;
 matlabFunction(h18_eqn,'file','h18_eqn');
 % h18 Jacobian
 H18_matrix_eq=jacobian(h18_eqn,X);
 matlabFunction(H18_matrix_eq,'file','H18_matrix');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%       BR POINT 4       %%%%%%         H19
+%%%%%       BR POINT 4       %%%%%%         H19 left heel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BR_point4_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
 eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]/1000);
-BR_point4_pixels = BRCameraMatrix * BR_point4_xyz;
+
+BR_point4_xyz = [BR_point4_xyz(2);BR_point4_xyz(1);BR_point4_xyz(3);1];
+
+BR_point4_pixels = FLCameraMatrix(1:2,:) * BR_point4_xyz./repmat(FLCameraMatrix(3,:) * BR_point4_xyz,2,1);
 
 
 % h19 Equation
-h19_eqn = [BR_point4_pixels];
+h19_eqn = BR_point4_pixels;
 matlabFunction(h19_eqn,'file','h19_eqn');
 % h19 Jacobian
 H19_matrix_eq=jacobian(h19_eqn,X);

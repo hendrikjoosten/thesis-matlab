@@ -47,6 +47,11 @@ body_gps_long = IMU_Data.data(:,21);         % Z3
 body_gps_speed = IMU_Data.data(:,22);        % Z3 
 body_gps_head = IMU_Data.data(:,23);         % Z3
 
+%http://msi.nga.mil/MSISiteContent/StaticFiles/Calculators/degree.html
+
+body_gps_pos = [(body_gps_lat-body_gps_lat(1))*110922,(body_gps_long-body_gps_long(1))*92423];
+body_gps_vel = [body_gps_speed.*cosd(body_gps_head), body_gps_speed.*sind(body_gps_head)];
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Camera data points
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

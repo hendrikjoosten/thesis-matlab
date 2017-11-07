@@ -12,8 +12,9 @@ clc
 
 create_PQR;             %create important matrices and initialise R values
 create_data;            %create the measurement vectors   DONE    
-create_equations;       %create the measurement equations DONE
-states = zeros(42,42);
+%create_equations;       %create the measurement equations DONE
+
+states = zeros(42,1);
 
 mx = -0.1316;
 my = 17.3801;
@@ -23,15 +24,18 @@ mz = -21.101;
 %%FILTER
 %%=================================================================
 
-x_estimated_store = zeros(34,N);
-x_actual_store = zeros(34,N);
-
-Pcov_store = zeros(34,34,N);
-p_store = zeros(34,34,N);
-f_store = zeros(34,34,N);
-
 N = 1800;
 I = eye(42);
+
+
+x_estimated_store = zeros(42,N);
+x_actual_store = zeros(42,N);
+
+Pcov_store = zeros(42,42,N);
+p_store = zeros(42,42,N);
+f_store = zeros(42,42,N);
+
+
 
 
 for i=1:1:N
@@ -101,15 +105,15 @@ for i=1:1:N
     %%=================================================================
     
     if z03Avail(i) == 1
-        z03 = [];
+        z03 = [body_gps_pos(i,:)';body_gps_vel(i,:)'];
         zk = [zk; z03];
         
-        H3 = H3_matrix();
+        H3 = H3_matrix(bodyX, bodyY, d_bodyX, d_bodyY);
         h3 = h3_eqn();
         H = [H;H3];
         h = [h;h3];
         
-        R = [R,];
+        R = [R,r_gps_pos,r_gps_pos,r_gps_vel,r_gps_vel,];
     end
     
     %%=================================================================
