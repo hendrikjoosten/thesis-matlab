@@ -93,43 +93,25 @@ body_gps_head = IMU_Data.data(:,23);         % Z3
 
 %FRONT LEFT
 fl1 = FL_Data.data(:,1:2);      %Z4 - See Table
-fl1(:,2) = 720 - fl1(:,2);      %change origin to matlab spec
 fl2 = FL_Data.data(:,3:4);      %Z5 - See Table
-fl2(:,2) = 720 - fl2(:,2);      %change origin to matlab spec
 fl3 = FL_Data.data(:,5:6);      %Z6 - See Table
-fl3(:,2) = 720 - fl3(:,2);      %change origin to matlab spec
 fl4 = FL_Data.data(:,7:8);      %Z7 - See Table
-fl4(:,2) = 720 - fl4(:,2);      %change origin to matlab spec
-
 %FRONT RIGHT
 fr1 = FR_Data.data(:,1:2);      %Z8 - See Table
-fr1(:,2) = 720 - fr1(:,2);      %change origin to matlab spec
 fr2 = FR_Data.data(:,3:4);      %Z9 - See Table
-fr2(:,2) = 720 - fr2(:,2);      %change origin to matlab spec
 fr3 = FR_Data.data(:,5:6);      %Z10 - See Table
-fr3(:,2) = 720 - fr3(:,2);      %change origin to matlab spec
 fr4 = FR_Data.data(:,7:8);      %Z11 - See Table
-fr4(:,2) = 720 - fr4(:,2);      %change origin to matlab spec
-
 %BACK LEFT
 bl1 = BL_Data.data(:,1:2);      %Z12 - See Table
-bl1(:,2) = 720 - bl1(:,2);      %change origin to matlab spec
 bl2 = BL_Data.data(:,3:4);      %Z13 - See Table
-bl2(:,2) = 720 - bl2(:,2);      %change origin to matlab spec
 bl3 = BL_Data.data(:,5:6);      %Z14 - See Table
-bl3(:,2) = 720 - bl3(:,2);      %change origin to matlab spec
 bl4 = BL_Data.data(:,7:8);      %Z15 - See Table
-bl4(:,2) = 720 - bl4(:,2);      %change origin to matlab spec
-
 %BACK RIGHT
 br1 = BR_Data.data(:,1:2);      %Z16 - See Table
-br1(:,2) = 720 - br1(:,2);      %change origin to matlab spec
 br2 = BR_Data.data(:,3:4);      %Z17 - See Table
-br2(:,2) = 720 - br2(:,2);      %change origin to matlab spec
 br3 = BR_Data.data(:,5:6);      %Z18 - See Table
-br3(:,2) = 720 - br3(:,2);      %change origin to matlab spec
 br4 = BR_Data.data(:,7:8);      %Z19 - See Table
-br4(:,2) = 720 - br4(:,2);      %change origin to matlab spec
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generating availibility vectors for EKF
@@ -209,6 +191,30 @@ z18Avail(find(br3(:,1))) = 1;
 % Z19 - See Table
 z19Avail = zeros(length(fl1),1);
 z19Avail(find(br4(:,1))) = 1;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% rotating camera frames
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+fl1(:,1) = 1280 - fl1(:,1);      %change origin to matlab spec
+fl2(:,1) = 1280 - fl2(:,1);      %change origin to matlab spec
+fl3(:,1) = 1280 - fl3(:,1);      %change origin to matlab spec
+fl4(:,1) = 1280 - fl4(:,1);      %change origin to matlab spec
+fr1(:,1) = 1280 - fr1(:,1);      %change origin to matlab spec
+fr2(:,1) = 1280 - fr2(:,1);      %change origin to matlab spec
+fr3(:,1) = 1280 - fr3(:,1);      %change origin to matlab spec
+fr4(:,1) = 1280 - fr4(:,1);      %change origin to matlab spec
+bl1(:,2) = 720 - bl1(:,2);      %change origin to matlab spec
+bl2(:,2) = 720 - bl2(:,2);      %change origin to matlab spec
+bl3(:,2) = 720 - bl3(:,2);      %change origin to matlab spec
+bl4(:,2) = 720 - bl4(:,2);      %change origin to matlab spec
+br1(:,2) = 720 - br1(:,2);      %change origin to matlab spec
+br2(:,2) = 720 - br2(:,2);      %change origin to matlab spec
+br3(:,2) = 720 - br3(:,2);      %change origin to matlab spec
+br4(:,2) = 720 - br4(:,2);      %change origin to matlab spec
 
 
 
