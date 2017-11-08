@@ -11,8 +11,8 @@ clc
 %%=================================================================
 
 create_PQR;             %create important matrices and initialise R values
-create_data;            %create the measurement vectors   DONE    
-%create_equations;       %create the measurement equations DONE
+create_data;            %create the measurement vectors DONE    
+create_equations;       %create the measurement equations DONE
 
 states = zeros(42,1);
 
@@ -27,15 +27,12 @@ mz = -21.101;
 N = 1800;
 I = eye(42);
 
-
 x_estimated_store = zeros(42,N);
 x_actual_store = zeros(42,N);
 
 Pcov_store = zeros(42,42,N);
 p_store = zeros(42,42,N);
 f_store = zeros(42,42,N);
-
-
 
 
 for i=1:1:N
@@ -54,7 +51,7 @@ for i=1:1:N
     x_estimated_store(:,i) = states;    
     
     %determining the F matrix
-    Fmatrix  = Fmatrix_function(bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw, LHipPitch, LHipYaw, LKneePitch, LAnklePitch,RHipPitch, RHipYaw, RKneePitch, RAnklePitch,d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch);
+    Fmatrix  = F_matrix_function();
     f_store(:,:,i) = Fmatrix;
     
     %determining the P matrix
@@ -74,7 +71,7 @@ for i=1:1:N
         z01 = [body_accel_x(i);body_accel_y(i);body_accel_z(i);body_gyro_x(i);body_gyro_y(i);body_gyro_z(i);body_mag_x(i);body_mag_y(i);body_mag_z(i)];
         zk = [zk; z01];
         
-        H1 = H1_matrix(dd_bodyX,dd_bodyY,dd_bodyZ,d_bodyRoll, d_bodyPitch, d_bodyYaw,mx,my,mz);
+        H1 = H1_matrix();
         h1 = h1_eqn(dd_bodyX,dd_bodyY,dd_bodyZ,d_bodyRoll, d_bodyPitch, d_bodyYaw,mx,my,mz);
         H = [H;H1];
         h = [h;h1];
