@@ -97,11 +97,11 @@ temp_acc = vec_acc;
 temp_gyro = vec_omega;
 %h1 Equation
 h1_eqn = [temp_acc; temp_gyro];
-h1_eqn = simplify(h1_eqn);
 matlabFunction(h1_eqn,'file','h1_eqn');
 %h1 Jacobian
 H1_matrix_eq=jacobian(h1_eqn,X);
 matlabFunction(H1_matrix_eq,'file','H1_matrix');
+clear h1_eqn H1_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h2 barometer DONE
@@ -114,6 +114,7 @@ matlabFunction(h2_eqn,'file','h2_eqn');
 % h2 Jacobian
 H2_matrix_eq=jacobian(h2_eqn,X);
 matlabFunction(H2_matrix_eq,'file','H2_matrix');
+clear h2_eqn H2_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h3 GPS
@@ -128,7 +129,7 @@ matlabFunction(h3_eqn,'file','h3_eqn');
 % h3 Jacobian
 H3_matrix_eq=jacobian(h3_eqn,X);
 matlabFunction(H3_matrix_eq,'file','H3_matrix');
-
+clear h3_eqn H3_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %import camera goodies
@@ -196,6 +197,7 @@ matlabFunction(h4_eqn,'file','h4_eqn');
 % h4 Jacobian
 H4_matrix_eq=jacobian(h4_eqn,X);
 matlabFunction(H4_matrix_eq,'file','H4_matrix');
+clear h4_eqn H4_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FL POINT 2       %%%%%%         H5      LEFT KNEE
@@ -210,8 +212,9 @@ FL_point2_pixels = FLCameraMatrix(1:2,:) * FL_point2_xyz./repmat(FLCameraMatrix(
 h5_eqn = FL_point2_pixels;
 matlabFunction(h5_eqn,'file','h5_eqn');
 % h5 Jacobian
-H4_matrix_eq=jacobian(h5_eqn,X);
-matlabFunction(H4_matrix_eq,'file','H5_matrix');
+H5_matrix_eq=jacobian(h5_eqn,X);
+matlabFunction(H5_matrix_eq,'file','H5_matrix');
+clear h5_eqn H5_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FL POINT 3       %%%%%%         H6      RIGHT TOE
@@ -228,7 +231,8 @@ h6_eqn = FL_point3_pixels;
 matlabFunction(h6_eqn,'file','h6_eqn');
 % h6 Jacobian
 H6_matrix_eq=jacobian(h6_eqn,X);
-matlabFunction(H4_matrix_eq,'file','H6_matrix');
+matlabFunction(H6_matrix_eq,'file','H6_matrix');
+clear h6_eqn H6_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FL POINT 4       %%%%%%         H7          LEFT TOE
@@ -246,6 +250,7 @@ matlabFunction(h7_eqn,'file','h7_eqn');
 % h7 Jacobian
 H7_matrix_eq=jacobian(h7_eqn,X);
 matlabFunction(H7_matrix_eq,'file','H7_matrix');
+clear h7_eqn H7_matrix_eq
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -264,6 +269,7 @@ matlabFunction(h8_eqn,'file','h8_eqn');
 % h8 Jacobian
 H8_matrix_eq=jacobian(h8_eqn,X);
 matlabFunction(H8_matrix_eq,'file','H8_matrix');
+clear h8_eqn H8_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FR POINT 2       %%%%%%         H9          LEFT KNEE
@@ -281,6 +287,7 @@ matlabFunction(h9_eqn,'file','h9_eqn');
 % h9 Jacobian
 H9_matrix_eq=jacobian(h9_eqn,X);
 matlabFunction(H9_matrix_eq,'file','H9_matrix');
+clear h9_eqn H9_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FR POINT 3       %%%%%%         H10         RIGHT TOE
@@ -299,6 +306,7 @@ matlabFunction(h10_eqn,'file','h10_eqn');
 % h10 Jacobian
 H10_matrix_eq=jacobian(h10_eqn,X);
 matlabFunction(H10_matrix_eq,'file','H10_matrix');
+clear h10_eqn H10_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       FR POINT 4       %%%%%%         H11         LEFT TOE
@@ -316,6 +324,7 @@ matlabFunction(h11_eqn,'file','h11_eqn');
 % h11 Jacobian
 H11_matrix_eq=jacobian(h11_eqn,X);
 matlabFunction(H11_matrix_eq,'file','H11_matrix');
+clear h11_eqn H11_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%  back
@@ -337,6 +346,7 @@ matlabFunction(h12_eqn,'file','h12_eqn');
 % h12 Jacobian
 H12_matrix_eq=jacobian(h12_eqn,X);
 matlabFunction(H12_matrix_eq,'file','H12_matrix');
+clear h12_eqn H12_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BL POINT 2       %%%%%%         H13 left calf
@@ -355,6 +365,7 @@ matlabFunction(h13_eqn,'file','h13_eqn');
 % h13 Jacobian
 H13_matrix_eq=jacobian(h13_eqn,X);
 matlabFunction(H13_matrix_eq,'file','H13_matrix');
+clear h13_eqn H13_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BL POINT 3       %%%%%%         H14 right heel
@@ -373,6 +384,7 @@ matlabFunction(h14_eqn,'file','h14_eqn');
 % h14 Jacobian
 H14_matrix_eq=jacobian(h14_eqn,X);
 matlabFunction(H14_matrix_eq,'file','H14_matrix');
+clear h14_eqn H14_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BL POINT 4       %%%%%%         H15 left heel
@@ -391,7 +403,7 @@ matlabFunction(h15_eqn,'file','h15_eqn');
 % h15 Jacobian
 H15_matrix_eq=jacobian(h15_eqn,X);
 matlabFunction(H15_matrix_eq,'file','H15_matrix');
-
+clear h15_eqn H15_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BR POINT 1       %%%%%%         H16 right calf
@@ -410,6 +422,7 @@ matlabFunction(h16_eqn,'file','h16_eqn');
 % h16 Jacobian
 H16_matrix_eq=jacobian(h16_eqn,X);
 matlabFunction(H16_matrix_eq,'file','H16_matrix');
+clear h16_eqn H16_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BR POINT 2       %%%%%%         H17 left calf
@@ -428,6 +441,7 @@ matlabFunction(h17_eqn,'file','h17_eqn');
 % h17 Jacobian
 H17_matrix_eq=jacobian(h17_eqn,X);
 matlabFunction(H17_matrix_eq,'file','H17_matrix');
+clear h17_eqn H17_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BR POINT 3       %%%%%%         H18 right heel
@@ -446,6 +460,7 @@ matlabFunction(h18_eqn,'file','h18_eqn');
 % h18 Jacobian
 H18_matrix_eq=jacobian(h18_eqn,X);
 matlabFunction(H18_matrix_eq,'file','H18_matrix');
+clear h18_eqn H18_matrix_eq
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BR POINT 4       %%%%%%         H19 left heel
@@ -464,4 +479,4 @@ matlabFunction(h19_eqn,'file','h19_eqn');
 % h19 Jacobian
 H19_matrix_eq=jacobian(h19_eqn,X);
 matlabFunction(H19_matrix_eq,'file','H19_matrix');
-
+clear h19_eqn H19_matrix_eq

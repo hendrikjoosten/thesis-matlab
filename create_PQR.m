@@ -16,18 +16,18 @@ vec_p_acc = [p_dd_x;p_dd_y;p_dd_z];
 vec_p_vel = ts*vec_p_acc;
 vec_p_pos = ts*vec_p_vel;
 
-p_dd_phi = 0.1;
-p_dd_theta = 0.1;
-p_dd_psi = 0.1;
+p_dd_phi = 1;
+p_dd_theta = 1;
+p_dd_psi = 1;
 
 vec_p_ddangles = [p_dd_phi;p_dd_theta;p_dd_psi];
 vec_p_dangles = ts*vec_p_ddangles;
 vec_p_angles = ts*vec_p_dangles;
 
-p_dd_theta_hip = 0.1;
-p_dd_psi_hip = 0.1;
-p_dd_theta_knee = 0.1;
-p_dd_theta_ankle = 0.1;
+p_dd_theta_hip = 1;
+p_dd_psi_hip = 1;
+p_dd_theta_knee = 1;
+p_dd_theta_ankle = 1;
 
 vec_p_ddlegs = [p_dd_theta_hip;p_dd_psi_hip;p_dd_theta_knee;p_dd_theta_ankle];
 vec_p_dlegs = ts*vec_p_ddlegs;
@@ -37,7 +37,7 @@ P = [...
     vec_p_pos;...           
     vec_p_angles;...        
     vec_p_legs;...          
-    vec_p_legs;...         
+    vec_p_legs;...
     vec_p_vel;...
     vec_p_dangles;...
     vec_p_dlegs;...

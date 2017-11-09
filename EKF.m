@@ -2,7 +2,7 @@
 %%admin
 %%=================================================================
 
-clear 
+clear all
 close all
 clc
 
@@ -47,7 +47,7 @@ for i=1:1:N
     
     states = num2cell(states);
     [bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw, LHipPitch, LHipYaw, LKneePitch, LAnklePitch,RHipPitch, RHipYaw, RKneePitch, RAnklePitch,d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch] = deal(states{:});
-    states = state_predict_function(bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw, LHipPitch, LHipYaw, LKneePitch, LAnklePitch,RHipPitch, RHipYaw, RKneePitch, RAnklePitch,d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch);
+    states = state_prediction_function(bodyX, bodyY, bodyZ, bodyRoll, bodyPitch, bodyYaw, LHipPitch, LHipYaw, LKneePitch, LAnklePitch,RHipPitch, RHipYaw, RKneePitch, RAnklePitch,d_bodyX, d_bodyY, d_bodyZ, d_bodyRoll, d_bodyPitch, d_bodyYaw,d_LHipPitch, d_LHipYaw, d_LKneePitch, d_LAnklePitch,d_RHipPitch, d_RHipYaw, d_RKneePitch, d_RAnklePitch,dd_bodyX, dd_bodyY, dd_bodyZ, dd_bodyRoll, dd_bodyPitch, dd_bodyYaw,dd_LHipPitch, dd_LHipYaw, dd_LKneePitch, dd_LAnklePitch,dd_RHipPitch, dd_RHipYaw, dd_RKneePitch, dd_RAnklePitch);
     x_estimated_store(:,i) = states;    
     
     %determining the F matrix
@@ -72,11 +72,11 @@ for i=1:1:N
         zk = [zk; z01];
         
         H1 = H1_matrix();
-        h1 = h1_eqn(dd_bodyX,dd_bodyY,dd_bodyZ,d_bodyRoll, d_bodyPitch, d_bodyYaw,mx,my,mz);
+        h1 = h1_eqn(d_bodyYaw,d_bodyRoll,d_bodyPitch,dd_bodyX,dd_bodyY,dd_bodyZ);
         H = [H;H1];
         h = [h;h1];
         
-        R = [R,r_accelerometer,r_accelerometer,r_accelerometer,r_gyroscope,r_gyroscope,r_gyroscope,r_magnetometer,r_magnetometer,r_magnetometer];
+        R = [R,r_accelerometer,r_accelerometer,r_accelerometer,r_gyroscope,r_gyroscope,r_gyroscope];
         
     end
     
