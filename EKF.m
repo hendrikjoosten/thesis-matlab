@@ -67,8 +67,8 @@ for i=1:1:N
     %%acceleromteter gyroscope, magnetometer
     %%=================================================================
     
-    if z01Avail(i) == 1
-        z01 = [body_accel_x(i);body_accel_y(i);body_accel_z(i);body_gyro_x(i);body_gyro_y(i);body_gyro_z(i);body_mag_x(i);body_mag_y(i);body_mag_z(i)];
+    if z01Avail(i) == 2
+        z01 = [body_accel_x(i);body_accel_y(i);body_accel_z(i);body_gyro_x(i);body_gyro_y(i);body_gyro_z(i)];
         zk = [zk; z01];
         
         H1 = H1_matrix();
@@ -84,9 +84,9 @@ for i=1:1:N
     %%barometer
     %%=================================================================
     
-    if z02Avail(i) == 1
-        z02 = [body_barometer(i)];
-        zk = [zk; z03];
+    if z02Avail(i) == 2
+        z02 = body_barometer(i);
+        zk = [zk; z02];
         
         H2 = H2_matrix(bodyZ);
         h2 = h2_eqn(bodyZ);
@@ -101,12 +101,12 @@ for i=1:1:N
     %%gps
     %%=================================================================
     
-    if z03Avail(i) == 1
+    if z03Avail(i) == 2
         z03 = [body_gps_pos(i,:)';body_gps_vel(i,:)'];
         zk = [zk; z03];
         
-        H3 = H3_matrix(bodyX, bodyY, d_bodyX, d_bodyY);
-        h3 = h3_eqn();
+        H3 = H3_matrix();
+        h3 = h3_eqn(bodyX, bodyY, d_bodyX, d_bodyY);
         H = [H;H3];
         h = [h;h3];
         
@@ -121,8 +121,8 @@ for i=1:1:N
         z04 = [fl1(i,1);fl1(i,2)];
         zk = [zk; z04];
         
-        H4 = H4_matrix();
-        h4 = h4_eqn();
+        H4 = H4_matrix(RHipPitch);
+        h4 = h4_eqn(RHipPitch);
         H = [H;H4];
         h = [h;h4];
         
@@ -133,8 +133,8 @@ for i=1:1:N
         z05 = [fl2(i,1);fl2(i,2)];
         zk = [zk; z05];
         
-        H5 = H5_matrix();
-        h5 = h5_eqn();
+        H5 = H5_matrix(LHipPitch);
+        h5 = h5_eqn(LHipPitch);
         H = [H;H5];
         h = [h;h5];
         
@@ -145,8 +145,8 @@ for i=1:1:N
         z06 = [fl3(i,1);fl3(i,2)];
         zk = [zk; z06];
         
-        H6 = H6_matrix();
-        h6 = h6_eqn();
+        H6 = H6_matrix(RAnklePitch,RHipPitch,RKneePitch);
+        h6 = h6_eqn(RAnklePitch,RHipPitch,RKneePitch);
         H = [H;H6];
         h = [h;h6];
         
@@ -157,8 +157,8 @@ for i=1:1:N
         z07 = [fl4(i,1);fl4(i,2)];
         zk = [zk; z07];
         
-        H7 = H7_matrix();
-        h7 = h7_eqn();
+        H7 = H7_matrix(LAnklePitch,LHipPitch,LKneePitch);
+        h7 = h7_eqn(LAnklePitch,LHipPitch,LKneePitch);
         H = [H;H7];
         h = [h;h7];
         
@@ -169,8 +169,8 @@ for i=1:1:N
         z08 = [fr1(i,1);fr1(i,2)];
         zk = [zk; z08];
         
-        H8 = H8_matrix();
-        h8 = h8_eqn();
+        H8 = H8_matrix(RHipPitch);
+        h8 = h8_eqn(RHipPitch);
         H = [H;H8];
         h = [h;h8];
         
@@ -178,11 +178,11 @@ for i=1:1:N
     end
     
     if z09Avail(i) == 1
-        z10 = [fr2(i,1);fr2(i,2)];
-        zk = [zk; z10];
+        z09 = [fr2(i,1);fr2(i,2)];
+        zk = [zk; z09];
         
-        H9 = H9_matrix();
-        h9 = h9_eqn();
+        H9 = H9_matrix(LHipPitch);
+        h9 = h9_eqn(LHipPitch);
         H = [H;H9];
         h = [h;h9];
         
@@ -193,8 +193,8 @@ for i=1:1:N
         z10 = [fr3(i,1);fr3(i,2)];
         zk = [zk; z10];
         
-        H10 = H10_matrix();
-        h10 = h10_eqn();
+        H10 = H10_matrix(RAnklePitch,RHipPitch,RKneePitch);
+        h10 = h10_eqn(RAnklePitch,RHipPitch,RKneePitch);
         H = [H;H10];
         h = [h;h10];
         
@@ -205,8 +205,8 @@ for i=1:1:N
         z11 = [fr4(i,1);fr4(i,2)];
         zk = [zk; z11];
         
-        H10 = H11_matrix();
-        h11 = h11_eqn();
+        H11 = H11_matrix(LAnklePitch,LHipPitch,LKneePitch);
+        h11 = h11_eqn(LAnklePitch,LHipPitch,LKneePitch);
         H = [H;H11];
         h = [h;h11];
         
@@ -214,23 +214,23 @@ for i=1:1:N
     end
     
     if z12Avail(i) == 1
-        z12 = [bl1(i,1),bl(i,2)];
+        z12 = [bl1(i,1);bl1(i,2)];
         zk = [zk; z12];
         
-        H10 = H12_matrix();
-        h12 = h12_eqn();
+        H12 = H12_matrix(RHipPitch,RKneePitch);
+        h12 = h12_eqn(RHipPitch,RKneePitch);
         H = [H;H12];
         h = [h;h12];
         
         R = [R,r_pixel,r_pixel];
     end
     
-    if z13Avail(i) == 1
-        z13 = [bl2(i,1),bl2(i,2)];
+    if z13Avail(i) == 1         %left calf
+        z13 = [bl2(i,1);bl2(i,2)];
         zk = [zk; z13];
         
-        H10 = H13_matrix();
-        h13 = h13_eqn();
+        H13 = H13_matrix(LHipPitch,LKneePitch);
+        h13 = h13_eqn(LHipPitch,LKneePitch);
         H = [H;H13];
         h = [h;h13];
         
@@ -238,11 +238,11 @@ for i=1:1:N
     end
     
     if z14Avail(i) == 1
-        z14 = [bl3(i,1),bl3(i,2)];
+        z14 = [bl3(i,1);bl3(i,2)];
         zk = [zk; z14];
         
-        H10 = H14_matrix();
-        h14 = h14_eqn();
+        H14 = H14_matrix(RHipPitch,RKneePitch);
+        h14 = h14_eqn(RHipPitch,RKneePitch);
         H = [H;H14];
         h = [h;h14];
         
@@ -250,11 +250,11 @@ for i=1:1:N
     end
     
     if z15Avail(i) == 1
-        z15 = [bl4(i,1),bl4(i,2)];
+        z15 = [bl4(i,1);bl4(i,2)];
         zk = [zk; z15];
         
-        H10 = H15_matrix();
-        h15 = h15_eqn();
+        H15 = H15_matrix(LHipPitch,LKneePitch);
+        h15 = h15_eqn(LHipPitch,LKneePitch);
         H = [H;H15];
         h = [h;h15];
         
@@ -262,11 +262,11 @@ for i=1:1:N
     end
     
     if z16Avail(i) == 1
-        z16 = [br1(i,1),br1(i,2)];
+        z16 = [br1(i,1);br1(i,2)];
         zk = [zk; z16];
         
-        H10 = H16_matrix();
-        h16 = h16_eqn();
+        H16 = H16_matrix(RHipPitch,RKneePitch);
+        h16 = h16_eqn(RHipPitch,RKneePitch);
         H = [H;H16];
         h = [h;h16];
         
@@ -274,11 +274,11 @@ for i=1:1:N
     end
     
     if z17Avail(i) == 1
-        z17 = [br2(i,1),br2(i,2)];
+        z17 = [br2(i,1);br2(i,2)];
         zk = [zk; z17];
         
-        H10 = H17_matrix();
-        h17 = h17_eqn();
+        H17 = H17_matrix(LHipPitch,LKneePitch);
+        h17 = h17_eqn(LHipPitch,LKneePitch);
         H = [H;H17];
         h = [h;h17];
         
@@ -286,11 +286,11 @@ for i=1:1:N
     end
     
     if z18Avail(i) == 1
-        z18 = [br3(i,1),br3(i,2)];
+        z18 = [br3(i,1);br3(i,2)];
         zk = [zk; z18];
         
-        H10 = H18_matrix();
-        h18 = h18_eqn();
+        H18 = H18_matrix(RHipPitch,RKneePitch);
+        h18 = h18_eqn(RHipPitch,RKneePitch);
         H = [H;H18];
         h = [h;h18];
         
@@ -298,11 +298,11 @@ for i=1:1:N
     end
     
     if z19Avail(i) == 1
-        z19 = [br3(i,1),br3(i,2)];
+        z19 = [br3(i,1);br3(i,2)];
         zk = [zk; z19];
         
-        H10 = H19_matrix();
-        h19 = h19_eqn();
+        H19 = H19_matrix(LHipPitch,LKneePitch);
+        h19 = h19_eqn(LHipPitch,LKneePitch);
         H = [H;H19];
         h = [h;h19];
         
@@ -310,10 +310,104 @@ for i=1:1:N
     end
     
     % Kalman Gain
-    K = (P*H')/(H*P*H'+diag(R));
+    K = (P*H')/(H*P*H' + diag(R));
+    
     % Correction
-    states = states + K*(zk-h);
+    states = states + K *(zk-h);
+    x_actual_store(:,i) = states;
+    
     % New covariance
     P = (I-K*H)*P;
     
 end
+
+figure(1)
+subplot(4,4,1)
+plot(x_estimated_store(1,:));
+title('Estimated value of state 1')
+subplot(4,4,2)
+plot(x_estimated_store(2,:));
+title('Estimated value of state 2')
+subplot(4,4,3)
+plot(x_estimated_store(3,:));
+title('Estimated value of state 3')
+subplot(4,4,4)
+plot(x_estimated_store(4,:));
+title('Estimated value of state 4')
+subplot(4,4,5)
+plot(x_estimated_store(5,:));
+title('Estimated value of state 5')
+subplot(4,4,6)
+plot(x_estimated_store(6,:));
+title('Estimated value of state 6')
+subplot(4,4,7)
+plot(x_estimated_store(7,:));
+title('Estimated value of state 7')
+subplot(4,4,8)
+plot(x_estimated_store(8,:));
+title('Estimated value of state 8')
+subplot(4,4,9)
+plot(x_estimated_store(9,:));
+title('Estimated value of state 9')
+subplot(4,4,10)
+plot(x_estimated_store(10,:));
+title('Estimated value of state 10')
+subplot(4,4,11)
+plot(x_estimated_store(11,:));
+title('Estimated value of state 11')
+subplot(4,4,12)
+plot(x_estimated_store(12,:));
+title('Estimated value of state 12')
+subplot(4,4,13)
+plot(x_estimated_store(13,:));
+title('Estimated value of state 13')
+subplot(4,4,14)
+plot(x_estimated_store(14,:));
+title('Estimated value of state 14')
+
+
+figure(2)
+subplot(4,4,1)
+plot(x_actual_store(1,:));
+title('Actual value of state 1')
+subplot(4,4,2)
+plot(x_actual_store(2,:));
+title('Actual value of state 2')
+subplot(4,4,3)
+plot(x_actual_store(3,:));
+title('Actual value of state 3')
+subplot(4,4,4)
+plot(x_actual_store(4,:));
+title('Actual value of state 4')
+subplot(4,4,5)
+plot(x_actual_store(5,:));
+title('Actual value of state 5')
+subplot(4,4,6)
+plot(x_actual_store(6,:));
+title('Actual value of state 6')
+subplot(4,4,7)
+plot(x_actual_store(7,:));
+title('Actual value of state 7')
+subplot(4,4,8)
+plot(x_actual_store(8,:));
+title('Actual value of state 8')
+subplot(4,4,9)
+plot(x_actual_store(9,:));
+title('Actual value of state 9')
+subplot(4,4,10)
+plot(x_actual_store(10,:));
+title('Actual value of state 10')
+subplot(4,4,11)
+plot(x_actual_store(11,:));
+title('Actual value of state 11')
+subplot(4,4,12)
+plot(x_actual_store(12,:));
+title('Actual value of state 12')
+subplot(4,4,13)
+plot(x_actual_store(13,:));
+title('Actual value of state 13')
+subplot(4,4,14)
+plot(x_actual_store(14,:));
+title('Actual value of state 14')
+
+

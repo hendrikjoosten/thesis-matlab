@@ -1,6 +1,6 @@
 hold on
 
-axis([500 850 0 800])
+axis([500 900 0 800])
 
 scatter(fl1(:,1),fl1(:,2),[],'red'); %right knee
 

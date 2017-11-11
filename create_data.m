@@ -30,13 +30,25 @@ FR_Data = importdata('FR.csv',',');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %populate vectors in FROM IMU FRAME TO BODY FRAME
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+bias_accel_z = -2.74252E-05;	
+bias_accel_y = 0.000261902;	
+bias_accel_x = -2.04709E-05;
 
-body_accel_x = IMU_Data.data(:,9);           % Z1  m/s2
-body_accel_y = -IMU_Data.data(:,8);          % Z1  m/s2
-body_accel_z = -IMU_Data.data(:,7);          % Z1  m/s2
-body_gyro_x = IMU_Data.data(:,12);           % Z1  rad/s
-body_gyro_y = -IMU_Data.data(:,11);          % Z1  rad/s
-body_gyro_z = -IMU_Data.data(:,10);          % Z1  rad/s
+bias_gyro_z = 5.46604E-05;	
+bias_gyro_y = -1.29292E-05;	
+bias_gyro_x = -2.87219E-05;
+
+
+
+
+
+body_accel_x = IMU_Data.data(:,9) - bias_accel_x;           % Z1  m/s2
+body_accel_y = -IMU_Data.data(:,8) - bias_accel_y;          % Z1  m/s2
+body_accel_z = -IMU_Data.data(:,7) - bias_accel_z;          % Z1  m/s2
+body_gyro_x = IMU_Data.data(:,12) - bias_gyro_x;           % Z1  rad/s
+body_gyro_y = -IMU_Data.data(:,11) - bias_gyro_y;          % Z1  rad/s
+body_gyro_z = -IMU_Data.data(:,10) - bias_gyro_z;          % Z1  rad/s
+
 body_mag_x = IMU_Data.data(:,15);            % Z1  
 body_mag_y = -IMU_Data.data(:,14);           % Z1 
 body_mag_z = -IMU_Data.data(:,13);           % Z1 

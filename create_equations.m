@@ -2,7 +2,7 @@
 %symbols for the states same order as state vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%positional and anguar
+%positional and angular states
 syms bodyX bodyY bodyZ bodyRoll bodyPitch bodyYaw
 syms LHipPitch LHipYaw LKneePitch LAnklePitch
 syms RHipPitch RHipYaw RKneePitch RAnklePitch
@@ -351,7 +351,7 @@ clear h12_eqn H12_matrix_eq
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BL POINT 2       %%%%%%         H13 left calf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-BL_point2_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
+BL_point2_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + ...
 0.5*eulrot(0,RKneePitch,0)*vec_calf; 
 
 BL_point2_xyz = [BL_point2_xyz(2);BL_point2_xyz(1);BL_point2_xyz(3);1];
@@ -389,8 +389,8 @@ clear h14_eqn H14_matrix_eq
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BL POINT 4       %%%%%%         H15 left heel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-BL_point4_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]); 
+BL_point4_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + ...
+eulrot(0,LKneePitch,0)*(vec_calf + [0;0;15]); 
 
 BL_point4_xyz = [BL_point4_xyz(2);BL_point4_xyz(1);BL_point4_xyz(3);1];
 
@@ -427,8 +427,8 @@ clear h16_eqn H16_matrix_eq
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BR POINT 2       %%%%%%         H17 left calf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-BR_point2_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-0.5*eulrot(0,RKneePitch,0)*vec_calf;
+BR_point2_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + ...
+0.5*eulrot(0,LKneePitch,0)*vec_calf;
 
 BR_point2_xyz = [BR_point2_xyz(2);BR_point2_xyz(1);BR_point2_xyz(3);1];
 
@@ -465,8 +465,8 @@ clear h18_eqn H18_matrix_eq
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%       BR POINT 4       %%%%%%         H19 left heel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-BR_point4_xyz = vec_body_left + eulrot(0,RHipPitch,RHipYaw)*vec_thigh + ...
-eulrot(0,RKneePitch,0)*(vec_calf + [0;0;15]/1000);
+BR_point4_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + ...
+eulrot(0,LKneePitch,0)*(vec_calf + [0;0;15]/1000);
 
 BR_point4_xyz = [BR_point4_xyz(2);BR_point4_xyz(1);BR_point4_xyz(3);1];
 
