@@ -94,7 +94,7 @@ Q = [...
     vec_q_ddlegs...
     ];
 
-Q = diag(Q);
+Q = diag(Q)/1000;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%R Matrix input noise nxn (n = number of inputs) 16 pixel in 14 IMU
@@ -112,7 +112,7 @@ r_gps_vel = 0.5;                        %1 degrees
 r_gps_head = (15*pi/180)^2;             %1 degrees
 
 %from the cameras we have pixels as measurements
-r_pixel = 5^2;                          %16 degrees  maybe 32
+r_pixel = 200;                          %16 degrees  maybe 32
 
 
 

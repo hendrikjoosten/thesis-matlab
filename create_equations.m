@@ -120,8 +120,8 @@ clear h2_eqn H2_matrix_eq
 %h3 GPS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-temp_latlong = [-bodyX;bodyY];
-temp_vel = [-d_bodyX;d_bodyY];
+temp_latlong = [bodyX;bodyY];
+temp_vel = [d_bodyX;d_bodyY];
 
 % h3 Equation
 h3_eqn = [temp_latlong;temp_vel];
@@ -318,7 +318,7 @@ FR_point4_xyz = [FR_point4_xyz(2);FR_point4_xyz(1);FR_point4_xyz(3);1];
 
 FR_point4_pixels = FRCameraMatrix(1:2,:) * FR_point4_xyz./repmat(FRCameraMatrix(3,:) * FR_point4_xyz,2,1);
 
-% h4 Equation
+% h11 Equation
 h11_eqn = FR_point4_pixels;
 matlabFunction(h11_eqn,'file','h11_eqn');
 % h11 Jacobian
@@ -352,7 +352,7 @@ clear h12_eqn H12_matrix_eq
 %%%%%       BL POINT 2       %%%%%%         H13 left calf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BL_point2_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + ...
-0.5*eulrot(0,RKneePitch,0)*vec_calf; 
+0.5*eulrot(0,LKneePitch,0)*vec_calf; 
 
 BL_point2_xyz = [BL_point2_xyz(2);BL_point2_xyz(1);BL_point2_xyz(3);1];
 
@@ -390,7 +390,7 @@ clear h14_eqn H14_matrix_eq
 %%%%%       BL POINT 4       %%%%%%         H15 left heel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BL_point4_xyz = vec_body_left + eulrot(0,LHipPitch,LHipYaw)*vec_thigh + ...
-eulrot(0,LKneePitch,0)*(vec_calf + [0;0;15]); 
+eulrot(0,LKneePitch,0)*(vec_calf + [0;0;15]/1000); 
 
 BL_point4_xyz = [BL_point4_xyz(2);BL_point4_xyz(1);BL_point4_xyz(3);1];
 

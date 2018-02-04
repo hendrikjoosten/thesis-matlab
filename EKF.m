@@ -16,9 +16,7 @@ create_equations;       %create the measurement equations DONE
 
 states = zeros(42,1);
 
-mx = -0.1316;
-my = 17.3801;
-mz = -21.101;
+
 
 %%=================================================================
 %%FILTER
@@ -33,6 +31,8 @@ x_actual_store = zeros(42,N);
 Pcov_store = zeros(42,42,N);
 p_store = zeros(42,42,N);
 f_store = zeros(42,42,N);
+
+storez = [];
 
 
 for i=1:1:N
@@ -55,7 +55,7 @@ for i=1:1:N
     f_store(:,:,i) = Fmatrix;
     
     %determining the P matrix
-    P = (Fmatrix)*(P*(Fmatrix')) + Q;
+    P = (Fmatrix)*(P*(Fmatrix')) + Q*0.000001;
     p_store(:,:,i) = P;
     
     
@@ -67,7 +67,7 @@ for i=1:1:N
     %%acceleromteter gyroscope, magnetometer
     %%=================================================================
     
-    if z01Avail(i) == 2
+    if z01Avail(i) == 1
         z01 = [body_accel_x(i);body_accel_y(i);body_accel_z(i);body_gyro_x(i);body_gyro_y(i);body_gyro_z(i)];
         zk = [zk; z01];
         
@@ -84,7 +84,7 @@ for i=1:1:N
     %%barometer
     %%=================================================================
     
-    if z02Avail(i) == 2
+    if z02Avail(i) == 1
         z02 = body_barometer(i);
         zk = [zk; z02];
         
@@ -101,7 +101,7 @@ for i=1:1:N
     %%gps
     %%=================================================================
     
-    if z03Avail(i) == 2
+    if z03Avail(i) == 1
         z03 = [body_gps_pos(i,:)';body_gps_vel(i,:)'];
         zk = [zk; z03];
         
@@ -110,7 +110,7 @@ for i=1:1:N
         H = [H;H3];
         h = [h;h3];
         
-        R = [R,r_gps_pos,r_gps_pos,r_gps_vel,r_gps_vel,];
+        R = [R,r_gps_pos,r_gps_pos,r_gps_vel,r_gps_vel];
     end
     
     %%=================================================================
@@ -311,7 +311,7 @@ for i=1:1:N
     
     % Kalman Gain
     K = (P*H')/(H*P*H' + diag(R));
-    
+   
     % Correction
     states = states + K *(zk-h);
     x_actual_store(:,i) = states;
@@ -323,91 +323,91 @@ end
 
 figure(1)
 subplot(4,4,1)
-plot(x_estimated_store(1,:));
+plot(abs(x_estimated_store(1,:)));
 title('Estimated value of state 1')
 subplot(4,4,2)
-plot(x_estimated_store(2,:));
+plot(abs(x_estimated_store(2,:)));
 title('Estimated value of state 2')
 subplot(4,4,3)
-plot(x_estimated_store(3,:));
+plot(abs(x_estimated_store(3,:)));
 title('Estimated value of state 3')
 subplot(4,4,4)
-plot(x_estimated_store(4,:));
+plot(abs(x_estimated_store(4,:)));
 title('Estimated value of state 4')
 subplot(4,4,5)
-plot(x_estimated_store(5,:));
+plot(abs(x_estimated_store(5,:)));
 title('Estimated value of state 5')
 subplot(4,4,6)
-plot(x_estimated_store(6,:));
+plot(abs(x_estimated_store(6,:)));
 title('Estimated value of state 6')
 subplot(4,4,7)
-plot(x_estimated_store(7,:));
+plot(abs(x_estimated_store(7,:)));
 title('Estimated value of state 7')
 subplot(4,4,8)
-plot(x_estimated_store(8,:));
+plot(abs(x_estimated_store(8,:)));
 title('Estimated value of state 8')
 subplot(4,4,9)
-plot(x_estimated_store(9,:));
+plot(abs(x_estimated_store(9,:)));
 title('Estimated value of state 9')
 subplot(4,4,10)
-plot(x_estimated_store(10,:));
+plot(abs(x_estimated_store(10,:)));
 title('Estimated value of state 10')
 subplot(4,4,11)
-plot(x_estimated_store(11,:));
+plot(abs(x_estimated_store(11,:)));
 title('Estimated value of state 11')
 subplot(4,4,12)
-plot(x_estimated_store(12,:));
+plot(abs(x_estimated_store(12,:)));
 title('Estimated value of state 12')
 subplot(4,4,13)
-plot(x_estimated_store(13,:));
+plot(abs(x_estimated_store(13,:)));
 title('Estimated value of state 13')
 subplot(4,4,14)
-plot(x_estimated_store(14,:));
+plot(abs(x_estimated_store(14,:)));
 title('Estimated value of state 14')
 
 
 figure(2)
 subplot(4,4,1)
-plot(x_actual_store(1,:));
+plot(abs(x_actual_store(1,:)));
 title('Actual value of state 1')
 subplot(4,4,2)
-plot(x_actual_store(2,:));
+plot(abs(x_actual_store(2,:)));
 title('Actual value of state 2')
 subplot(4,4,3)
-plot(x_actual_store(3,:));
+plot(abs(x_actual_store(3,:)));
 title('Actual value of state 3')
 subplot(4,4,4)
-plot(x_actual_store(4,:));
+plot(abs(x_actual_store(4,:)));
 title('Actual value of state 4')
 subplot(4,4,5)
-plot(x_actual_store(5,:));
+plot(abs(x_actual_store(5,:)));
 title('Actual value of state 5')
 subplot(4,4,6)
-plot(x_actual_store(6,:));
+plot(abs(x_actual_store(6,:)));
 title('Actual value of state 6')
 subplot(4,4,7)
-plot(x_actual_store(7,:));
+plot(abs(x_actual_store(7,:)));
 title('Actual value of state 7')
 subplot(4,4,8)
-plot(x_actual_store(8,:));
+plot(abs(x_actual_store(8,:)));
 title('Actual value of state 8')
 subplot(4,4,9)
-plot(x_actual_store(9,:));
+plot(abs(x_actual_store(9,:)));
 title('Actual value of state 9')
 subplot(4,4,10)
-plot(x_actual_store(10,:));
+plot(abs(x_actual_store(10,:)));
 title('Actual value of state 10')
 subplot(4,4,11)
-plot(x_actual_store(11,:));
+plot(abs(x_actual_store(11,:)));
 title('Actual value of state 11')
 subplot(4,4,12)
-plot(x_actual_store(12,:));
+plot(abs(x_actual_store(12,:)));
 title('Actual value of state 12')
 subplot(4,4,13)
-plot(x_actual_store(13,:));
+plot(abs(x_actual_store(13,:)));
 title('Actual value of state 13')
 subplot(4,4,14)
-plot(x_actual_store(14,:));
+plot(abs(x_actual_store(14,:)));
 title('Actual value of state 14')
 
 
